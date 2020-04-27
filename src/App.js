@@ -1,35 +1,43 @@
-import React from 'react';
-import logo from './logo.svg';
-import './App.css';
-import Todolist from './TodoList'
-import todosData from './todosData';
-import { render } from 'react-dom';
 
+import React from "react"
+import TodoList from "./TodoList"
+import todosData from "./todosData"
 
 class App extends React.Component {
-  constructor(){
-    super()
-    this.state = {
-      todos : todosData
+    constructor() {
+        super()
+        this.state = {
+            todos: todosData
+        }
+        this.handleChanged = this.handleChanged.bind(this)
     }
-  }
-
-render(){
-
- const todoscomp = this.state.todos.map(function(item){
-    return(
-      <Todolist key = {item.id} item={item}/>
-    )
-  })
-
-  return (
-    <div>
-        {todoscomp}
-          </div>
+    
+    handleChanged(id) {
+        this.setState(prevState => {
+            const updatedTodos = prevState.todos.map(todo => {
+                if (todo.id === id) {
+                    return{
+                      ...todo,
+                      completed : !todo.completed
+                    }
+                }
+                return todo
+            })
+            return {
+                todos: updatedTodos
+            }
+        })
+    }
+    
+    render() {
+        const todoItems = this.state.todos.map(item => <TodoList key={item.id} item={item} handleChanged={this.handleChanged}/>)
         
-        
-     
-  )
+        return (
+            <div className="todo-list">
+                {todoItems}
+            </div>
+        )    
+    }
 }
-}
-export default App;
+
+export default App
